@@ -29,7 +29,9 @@ def gradAscent(dataMatIn, classLabels):
         h = sigmoid(dataMatrix*weights)     #matrix mult
         error = (labelMat - h)              #vector subtraction
         weights = weights + alpha * dataMatrix.transpose()* error #matrix mult
-    return weights
+    return weights.flatten()
+
+#### decision boundary is where  \Sigma wi*xi = 0, since it corresponds to where the logistic function jumps, and equals 1/2.
 
 def plotBestFit(weights):
     import matplotlib.pyplot as plt
@@ -47,7 +49,7 @@ def plotBestFit(weights):
     ax = fig.add_subplot(111)
     ax.scatter(xcord1, ycord1, s=30, c='red', marker='s')
     ax.scatter(xcord2, ycord2, s=30, c='green')
-    x = arange(-3.0, 3.0, 0.1)
+    x = (arange(-3.0, 3.0, 0.1))
     y = (-weights[0]-weights[1]*x)/weights[2]
     ax.plot(x, y)
     plt.xlabel('X1'); plt.ylabel('X2');
@@ -67,14 +69,14 @@ def stocGradAscent1(dataMatrix, classLabels, numIter=150):
     m,n = shape(dataMatrix)
     weights = ones(n)   #initialize to all ones
     for j in range(numIter):
-        dataIndex = range(m)
+        dataIndex = list(range(m))
         for i in range(m):
             alpha = 4/(1.0+j+i)+0.0001    #apha decreases with iteration, does not 
             randIndex = int(random.uniform(0,len(dataIndex)))#go to 0 because of the constant
             h = sigmoid(sum(dataMatrix[randIndex]*weights))
             error = classLabels[randIndex] - h
             weights = weights + alpha * error * dataMatrix[randIndex]
-            del(dataIndex[randIndex])
+            del(dataIndex[(randIndex)])
     return weights
 
 def classifyVector(inX, weights):
@@ -103,11 +105,11 @@ def colicTest():
         if int(classifyVector(array(lineArr), trainWeights))!= int(currLine[21]):
             errorCount += 1
     errorRate = (float(errorCount)/numTestVec)
-    print "the error rate of this test is: %f" % errorRate
+    print("the error rate of this test is: %f" % errorRate)
     return errorRate
 
 def multiTest():
     numTests = 10; errorSum=0.0
     for k in range(numTests):
         errorSum += colicTest()
-    print "after %d iterations the average error rate is: %f" % (numTests, errorSum/float(numTests))
+    print("after %d iterations the average error rate is: %f" % (numTests, errorSum/float(numTests)))
